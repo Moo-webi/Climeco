@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dashboard_root"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- VARIABLE SELECTOR -->
+    <Spinner
+        android:id="@+id/spinnerVariavel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/variaveis" />
+
+    <!-- DATE SELECTORS -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingTop="12dp">
+
+        <Button
+            android:id="@+id/btnDataInicio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Data Início" />
+
+        <Button
+            android:id="@+id/btnDataFim"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Data Fim"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- LOAD DATA BUTTON -->
+    <Button
+        android:id="@+id/btnCarregar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Carregar Dados"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginTop="14dp"/>
+
+    <!-- CHART AREA -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"/>
+
+    <!-- STATISTICS PANEL -->
+    <LinearLayout
+        android:id="@+id/painelEstatisticas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="#EEEEEE"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:id="@+id/txtMedia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Média: --"/>
+
+        <TextView
+            android:id="@+id/txtMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Máximo: --"/>
+
+        <TextView
+            android:id="@+id/txtMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mínimo: --"/>
+
+        <TextView
+            android:id="@+id/txtTendencia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tendência: --"/>
+    </LinearLayout>
+
+</LinearLayout>
