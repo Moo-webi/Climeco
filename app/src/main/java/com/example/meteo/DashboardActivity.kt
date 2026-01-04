@@ -131,42 +131,51 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun compararPeriodos() {
-        val aIni = inicioA; val aFim = fimA
-        val bIni = inicioB; val bFim = fimB
-
-        if (aIni == null || aFim == null || bIni == null || bFim == null) {
-            Toast.makeText(this, "Seleciona os dois períodos.", Toast.LENGTH_SHORT).show()
-            atualizarEstado()
-            return
-        }
+        val aIni = inicioA ?: return
+        val aFim = fimA ?: return
+        val bIni = inicioB ?: return
+        val bFim = fimB ?: return
 
         val db = FirebaseFirestore.getInstance()
         txtEstado.text = "A carregar dados…"
 
-        db.collection("STATION_01")
-            .get()
-            .addOnSuccessListener { result ->
-                val todos = mutableListOf<Registo>()
+        val stations = listOf("STATION_01", "STATION_02", "STATION_03")
+        val todos = mutableListOf<Registo>()
+        var pending = stations.size
 
-                for (document in result) {
-                    val tsRaw = document.getLong("timestamp") ?: continue
-                    val tsMs = tsRaw * 1000L // Firestore em segundos -> ms
+        for (stationId in stations) {
+            db.collection(stationId)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        val tsRaw = document.getLong("timestamp") ?: continue
+                        val tsMs = tsRaw * 1000L
 
-                    val temp = document.getDouble("temperatura") ?: 0.0
-                    val hum = document.getDouble("humidade") ?: 0.0
-                    val pres = document.getDouble("pressao") ?: 0.0
+                        todos.add(
+                            Registo(
+                                timestamp = tsMs,
+                                temperatura = document.getDouble("temperatura") ?: 0.0,
+                                humidade = document.getDouble("humidade") ?: 0.0,
+                                pressao = document.getDouble("pressao") ?: 0.0,
+                                stationId = stationId
+                            )
+                        )
+                    }
 
-                    todos.add(Registo(timestamp = tsMs, temperatura = temp, humidade = hum, pressao = pres))
+                    pending--
+                    if (pending == 0) {
+                        processarComparacao(todos, aIni, aFim, bIni, bFim)
+                    }
                 }
-
-                processarComparacao(todos, aIni, aFim, bIni, bFim)
-            }
-            .addOnFailureListener { e ->
-                Log.e("Dashboard", "Erro ao ler Firebase", e)
-                limparUI("Erro ao carregar dados.")
-                Toast.makeText(this, "Erro ao carregar dados.", Toast.LENGTH_SHORT).show()
-            }
+                .addOnFailureListener {
+                    pending--
+                    if (pending == 0) {
+                        processarComparacao(todos, aIni, aFim, bIni, bFim)
+                    }
+                }
+        }
     }
+
 
     private fun processarComparacao(todos: List<Registo>, aIni: Long, aFim: Long, bIni: Long, bFim: Long) {
 

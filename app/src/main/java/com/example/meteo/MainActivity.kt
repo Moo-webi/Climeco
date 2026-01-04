@@ -20,34 +20,46 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadDataFromFirebase() {
         val db = FirebaseFirestore.getInstance()
+        val stations = listOf("STATION_01", "STATION_02", "STATION_03")
 
-        db.collection("STATION_01")
-            .get()
-            .addOnSuccessListener { result ->
+        val listaRegistos = mutableListOf<Registo>()
+        var pending = stations.size
 
-                val listaRegistos = mutableListOf<Registo>()
+        for (stationId in stations) {
+            db.collection(stationId)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        val temperatura = document.getDouble("temperatura") ?: 0.0
+                        val humidade = document.getDouble("humidade") ?: 0.0
+                        val pressao = document.getDouble("pressao") ?: 0.0
+                        val timestampSec = document.getLong("timestamp") ?: continue
 
-                for (document in result) {
-                    val temperatura = document.getDouble("temperatura") ?: 0.0
-                    val humidade = document.getDouble("humidade") ?: 0.0
-                    val timestamp = document.getLong("timestamp") ?: 0L
-
-                    listaRegistos.add(
-                        Registo(
-                            timestamp = timestamp,
-                            temperatura = temperatura,
-                            humidade = humidade
+                        listaRegistos.add(
+                            Registo(
+                                timestamp = timestampSec * 1000L,
+                                temperatura = temperatura,
+                                humidade = humidade,
+                                pressao = pressao,
+                                stationId = stationId
+                            )
                         )
-                    )
-                }
+                    }
 
-                // 🔥 Now do something useful with the data
-                displayData(listaRegistos)
-            }
-            .addOnFailureListener { e ->
-                Log.e("Firestore", "Erro ao ler dados", e)
-            }
+                    pending--
+                    if (pending == 0) {
+                        displayData(listaRegistos.sortedBy { it.timestamp })
+                    }
+                }
+                .addOnFailureListener {
+                    pending--
+                    if (pending == 0) {
+                        displayData(listaRegistos.sortedBy { it.timestamp })
+                    }
+                }
+        }
     }
+
 
     private fun displayData(lista: List<Registo>) {
         Log.d("DATA", "Total registos: ${lista.size}")
