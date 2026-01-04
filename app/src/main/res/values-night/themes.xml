@@ -1,7 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.Meteo" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">#60A5FA</item>
+        <item name="colorOnPrimary">#0B1220</item>
+
+        <item name="colorSecondary">#22D3EE</item>
+        <item name="colorOnSecondary">#0B1220</item>
+
+        <item name="android:colorBackground">#0B1220</item>
+        <item name="colorSurface">#111827</item>
+        <item name="colorOutline">#1F2937</item>
     </style>
+
 </resources>

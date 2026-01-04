@@ -1,94 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dashboard_root"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/meteo_background">
 
-    <!-- VARIABLE SELECTOR -->
-    <Spinner
-        android:id="@+id/spinnerVariavel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/variaveis" />
-
-    <!-- DATE SELECTORS -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:paddingTop="12dp">
-
-        <Button
-            android:id="@+id/btnDataInicio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Data Início" />
-
-        <Button
-            android:id="@+id/btnDataFim"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Data Fim"
-            android:layout_marginStart="8dp" />
-    </LinearLayout>
-
-    <!-- LOAD DATA BUTTON -->
-    <Button
-        android:id="@+id/btnCarregar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Carregar Dados"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:layout_marginTop="14dp"/>
-
-    <!-- CHART AREA -->
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp"/>
-
-    <!-- STATISTICS PANEL -->
-    <LinearLayout
-        android:id="@+id/painelEstatisticas"
+        android:id="@+id/dashboard_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp"
-        android:background="#EEEEEE"
-        android:layout_marginTop="12dp">
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/txtMedia"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Média: --"/>
+            android:text="Dashboard Meteo"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@color/meteo_text_primary"
+            android:paddingBottom="8dp"/>
 
+        <!-- Estado vazio / mensagens -->
         <TextView
-            android:id="@+id/txtMax"
-            android:layout_width="wrap_content"
+            android:id="@+id/txtEstado"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Máximo: --"/>
+            android:text="Escolhe uma variável e seleciona os dois períodos para comparar."
+            android:textColor="@color/meteo_text_muted"
+            android:paddingBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/txtMin"
-            android:layout_width="wrap_content"
+        <!-- Variável: Chips -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupVariavel"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mínimo: --"/>
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            android:paddingBottom="10dp">
 
-        <TextView
-            android:id="@+id/txtTendencia"
-            android:layout_width="wrap_content"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temperatura"
+                android:checkable="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipHum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Humidade"
+                android:checkable="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pressão"
+                android:checkable="true" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- Períodos -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPeriodoA"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tendência: --"/>
+            android:text="Selecionar Período A"
+            app:icon="@android:drawable/ic_menu_my_calendar"
+            app:iconGravity="textStart"
+            app:cornerRadius="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPeriodoB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecionar Período B"
+            app:icon="@android:drawable/ic_menu_my_calendar"
+            app:iconGravity="textStart"
+            app:cornerRadius="16dp"
+            android:layout_marginBottom="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCarregar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comparar"
+            app:cornerRadius="16dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Gráfico -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="380dp" />
+
+        <!-- Estatísticas A vs B -->
+        <LinearLayout
+            android:id="@+id/painelEstatisticas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estatísticas (A vs B)"
+                android:textStyle="bold"
+                android:textColor="@color/meteo_text_primary"
+                android:paddingBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- Coluna A -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@color/meteo_surface"
+                    android:padding="10dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/txtTituloA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Período A"
+                        android:textStyle="bold"
+                        android:textColor="@color/meteo_text_primary"
+                        android:paddingBottom="6dp"/>
+
+                    <TextView
+                        android:id="@+id/txtMediaA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Média: --"
+                        android:textColor="@color/meteo_text_primary"/>
+
+                    <TextView
+                        android:id="@+id/txtMaxA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Máximo: --"
+                        android:textColor="@color/meteo_text_primary"/>
+
+                    <TextView
+                        android:id="@+id/txtMinA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mínimo: --"
+                        android:textColor="@color/meteo_text_primary"/>
+
+                    <TextView
+                        android:id="@+id/txtTendenciaA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tendência: --"
+                        android:textColor="@color/meteo_text_primary"/>
+                </LinearLayout>
+
+                <!-- Coluna B -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@color/meteo_surface"
+                    android:padding="10dp"
+                    android:layout_marginStart="6dp">
+
+                    <TextView
+                        android:id="@+id/txtTituloB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Período B"
+                        android:textStyle="bold"
+                        android:textColor="@color/meteo_text_primary"
+                        android:paddingBottom="6dp"/>
+
+                    <TextView
+                        android:id="@+id/txtMediaB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Média: --"
+                        android:textColor="@color/meteo_text_primary"/>
+
+                    <TextView
+                        android:id="@+id/txtMaxB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Máximo: --"
+                        android:textColor="@color/meteo_text_primary"/>
+
+                    <TextView
+                        android:id="@+id/txtMinB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mínimo: --"
+                        android:textColor="@color/meteo_text_primary"/>
+
+                    <TextView
+                        android:id="@+id/txtTendenciaB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tendência: --"
+                        android:textColor="@color/meteo_text_primary"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

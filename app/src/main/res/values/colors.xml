@@ -2,4 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta Meteo (opcional, mas bonita) -->
+    <color name="meteo_primary">#2563EB</color>
+    <color name="meteo_onPrimary">#FFFFFF</color>
+
+    <color name="meteo_secondary">#06B6D4</color>
+    <color name="meteo_onSecondary">#0B1220</color>
+
+    <color name="meteo_background">#F7F8FA</color>
+    <color name="meteo_surface">#FFFFFF</color>
+    <color name="meteo_outline">#E5E7EB</color>
+
+    <color name="meteo_text_primary">#0F172A</color>
+    <color name="meteo_text_muted">#64748B</color>
 </resources>
